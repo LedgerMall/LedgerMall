@@ -1,0 +1,227 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}LedgerMall{% endblock %}</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Custom Global Styles -->
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9f9;
+      color: #444;
+      margin: 0;
+      padding-bottom: 100px; /* extra space for footer */
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
+    }
+    a:hover {
+      color: #0056b3;
+    }
+    /* Sticky Header with Gradient Background */
+    .navbar {
+      background: linear-gradient(135deg, #ffffff, #f2f2f2);
+      border-bottom: 1px solid #e0e0e0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 0.75rem 1rem;
+    }
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.9rem;
+      letter-spacing: 0.5px;
+    }
+    .navbar-nav .nav-link {
+      font-size: 1rem;
+      margin-right: 1rem;
+      padding: 0.5rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      border-radius: 6px;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #0056b3;
+      background-color: rgba(0, 123, 255, 0.1);
+    }
+    /* Search Bar */
+    .navbar .form-control {
+      border-radius: 30px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ced4da;
+      transition: border-color 0.2s ease;
+    }
+    .navbar .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0,123,255,0.25);
+    }
+    /* Main Container */
+    .container {
+      padding-top: 20px;
+    }
+    /* Card Styling */
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .card-img-top {
+      object-fit: cover;
+      height: 240px;
+    }
+    /* Custom Buttons */
+    .btn-custom {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      border: none;
+      border-radius: 30px;
+      padding: 0.5rem 1.25rem;
+      color: #fff;
+      font-weight: 500;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+    .btn-custom:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    }
+    /* Form Inputs */
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0,123,255,0.25);
+    }
+    /* Footer Styling */
+    .footer {
+      background-color: #343a40;
+      color: #ccc;
+      padding: 1rem 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-light mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('index') }}">LedgerMall</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      {% if current_user.is_authenticated %}
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          {% if not current_user.is_admin %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('wallet_view') }}">Wallet</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('cart') }}">Cart</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('chat') }}">Support Chat</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_categories') }}">Categories</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_support') }}">Support</a></li>
+          {% endif %}
+        </ul>
+        <!-- Search Bar -->
+        <form class="d-flex me-3" method="get" action="{{ url_for('search') }}">
+          <input class="form-control me-2" type="search" name="q" placeholder="Search products" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav">
+          {% if current_user.is_admin %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_logout') }}">Logout Admin</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <small>&copy; {{ current_year if current_year else 2025 }} LedgerMall. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

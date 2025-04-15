@@ -1,0 +1,68 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+{% block title %}Payment Details - CC Shop{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="card p-4 my-4">
+    <h3 class="mb-3">Payment Details</h3>
+    <p><strong>Transaction ID:</strong> {{ tx_id }}</p>
+    <p><strong>Selected Coin:</strong> 
+      {% if coin == "usdt_trc20" %}
+        USDT (TRC20)
+      {% elif coin == "bitcoin" %}
+        Bitcoin
+      {% elif coin == "ethereum" %}
+        Ethereum
+      {% elif coin == "solana" %}
+        Solana
+      {% elif coin == "bnb" %}
+        BNB
+      {% else %}
+        Unknown
+      {% endif %}
+    </p>
+    <p><strong>Amount to Pay:</strong> {{ txn.amountf if txn.amountf else txn.amount }}</p>
+    <p><strong>Status:</strong> {{ status_text }}</p>
+    <p><strong>Confirmations:</strong> {{ txn.recv_confirms }}</p>
+    <p><strong>{{ time_msg }}</strong></p>
+    {% if qr_url %}
+      <img src="{{ qr_url }}" alt="QR Code" class="img-fluid my-3" style="max-width:200px;">
+    {% endif %}
+    <a href="{{ url_for('payment_refresh') }}" class="btn btn-custom btn-primary">Refresh Payment Status</a>
+  </div>
+  <a href="{{ url_for('wallet_view') }}" class="btn btn-secondary">Back to Wallet</a>
+</div>
+{% endblock %}

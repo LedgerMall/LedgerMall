@@ -1,0 +1,88 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-semibold leading-6 text-gray-900 dark:text-white">Employee Dashboard</h1>
+        </div>
+    </div>
+
+    <!-- Analytics Cards -->
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-primary">Productivity Score</h2>
+                <div class="radial-progress text-primary" style="--value:70">70%</div>
+            </div>
+        </div>
+        
+        <!-- Burnout Risk Card -->
+        <div class="card bg-base-200 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-secondary">Burnout Risk</h2>
+                <div class="text-3xl font-bold text-error">High</div>
+                <div class="text-sm">Recommendations: 2</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Org Chart -->
+    <div class="mt-8 card bg-base-200">
+        <div class="card-body">
+            <h2 class="card-title">Team Structure</h2>
+            <div id="org-chart" class="w-full h-96"></div>
+        </div>
+    </div>
+
+    <!-- Advanced Task Board -->
+    <div class="mt-8 card bg-base-200">
+        <div class="card-body">
+            <div class="flex justify-between items-center">
+                <h2 class="card-title">Project Kanban</h2>
+                <div class="join">
+                    <button class="btn btn-sm join-item">Add Column</button>
+                    <button class="btn btn-sm join-item">Filter</button>
+                </div>
+            </div>
+            <div id="kanban-board" class="flex gap-4 overflow-x-auto py-4">
+                <!-- Dynamic Columns -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

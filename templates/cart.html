@@ -1,0 +1,77 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+{% block title %}Cart - LedgerMall{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Your Cart</h2>
+  {% if cart %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart %}
+        <tr>
+          <td>{{ item.product }}</td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.price }}</td>
+          <td>
+            <!-- Each remove button has its own form -->
+            <form method="post" action="{{ url_for('remove_cart_item', index=loop.index0) }}" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h4>Total: ${{ total }}</h4>
+    <!-- Separate checkout form -->
+    <form method="post" action="{{ url_for('cart') }}">
+      <button type="submit" class="btn btn-custom">Checkout</button>
+    </form>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

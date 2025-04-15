@@ -1,0 +1,65 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+{% block title %}{{ category }} - CC Shop{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>{{ category }} Products</h2>
+  <p>Choose from our wide range of quality products.</p>
+</div>
+<div class="row">
+  {% for name, prod in products.items() %}
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+      <div class="card h-100">
+        <img src="{{ prod.image_url if prod.image_url else 'https://via.placeholder.com/600x400?text=' ~ name }}" class="card-img-top" alt="{{ name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ name }}</h5>
+          <p class="card-text">
+            Price: ${{ prod.price }}<br>
+            Available: {{ prod.quantity }}
+          </p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="{{ url_for('product_detail', category=category, product_name=name) }}" class="btn btn-custom btn-outline-primary">Details</a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col">
+      <p>No products available in this category yet.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

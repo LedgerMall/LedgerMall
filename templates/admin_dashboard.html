@@ -1,0 +1,119 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - LedgerMall{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4 text-center">Admin Dashboard</h2>
+  <div class="row g-4">
+    <!-- Analytics Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Analytics</h5>
+          <p class="card-text">View detailed sales analytics and order history.</p>
+          <a href="{{ url_for('admin_analytics') }}" class="btn btn-light rounded-pill">View Analytics</a>
+        </div>
+      </div>
+    </div>
+    <!-- Categories Management Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Manage Categories</h5>
+          <p class="card-text">Add, remove, and update product categories.</p>
+          <a href="{{ url_for('admin_categories') }}" class="btn btn-light rounded-pill">Manage Categories</a>
+        </div>
+      </div>
+    </div>
+    <!-- Products Management Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-warning shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Manage Products</h5>
+          <p class="card-text">Add and remove products from the marketplace.</p>
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('admin_addproduct') }}" class="btn btn-light rounded-pill">Add Product</a>
+            <a href="{{ url_for('admin_rmproduct') }}" class="btn btn-light rounded-pill">Remove Product</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Accounts Management Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-secondary shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Manage Accounts</h5>
+          <p class="card-text">Add or remove accounts for a product.</p>
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('admin_addaccounts') }}" class="btn btn-light rounded-pill">Add Accounts</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Support Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Support</h5>
+          <p class="card-text">View and reply to user support messages.</p>
+          <a href="{{ url_for('admin_support') }}" class="btn btn-light rounded-pill">View Support</a>
+        </div>
+      </div>
+    </div>
+    <!-- Orders Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">Orders</h5>
+          <p class="card-text">Review total orders and revenue metrics.</p>
+          <a href="{{ url_for('admin_analytics') }}" class="btn btn-light rounded-pill">View Orders</a>
+        </div>
+      </div>
+    </div>
+    <!-- Stats Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title">User Stats</h5>
+          <p class="card-text">Total Users: {{ total_users }}</p>
+          <p class="card-text">Funds Added: ${{ funds_added }}</p>
+          <a href="{{ url_for('admin_stats') }}" class="btn btn-light rounded-pill">View Stats</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

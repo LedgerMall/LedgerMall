@@ -1,0 +1,93 @@
+<!--
+  LedgerMall: Next-Gen Crypto Digital Marketplace
+
+  Copyright (C) 2025 Samrat Talukdar
+
+  This file is part of LedgerMall.
+
+  LedgerMall is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  LedgerMall is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with LedgerMall. If not, see <https://www.gnu.org/licenses/>.
+
+  This software applies the provisions of the GNU Affero General Public License
+  to any service that uses it. If you run this software over a network, you must
+  make the source code of any modifications available to users of the service.
+
+  Attribution Notice:
+  If you use, modify, or distribute this software, you must include an appropriate
+  credit to the original author, Samrat Talukdar, in all copies or substantial
+  portions of the software. This credit should appear in the documentation, source code,
+  or user interface in a manner that makes it clear Samrat Talukdar is the original author.
+
+  For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
+-->
+
+
+{% extends "base.html" %}
+{% block title %}{{ product_name }} Details - LedgerMall{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <img src="{{ product.image_url if product.image_url else 'https://via.placeholder.com/800x500?text=' ~ product_name }}" class="card-img-top" alt="{{ product_name }}">
+        <div class="card-body">
+          <h3 class="card-title">{{ product_name }}</h3>
+          <p><strong>Category:</strong> {{ category }}</p>
+          <p><strong>Price:</strong> ${{ product.price }}</p>
+          <p><strong>Available:</strong> {{ product.quantity }}</p>
+          <form method="post">
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity:</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" required>
+            </div>
+            <button type="submit" class="btn btn-custom btn-primary">Add to Cart</button>
+          </form>
+        </div>
+      </div>
+      <!-- Reviews Section -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Reviews</h4>
+        </div>
+        <div class="card-body">
+          {% if product.reviews %}
+            {% for review in product.reviews %}
+              <div class="mb-3">
+                <strong>{{ review.username }}</strong> - Rating: {{ review.rating }}<br>
+                <p>{{ review.review }}</p>
+                <small>{{ review.timestamp | datetimeformat }}</small>
+              </div>
+              <hr>
+            {% endfor %}
+          {% else %}
+            <p>No reviews yet. Be the first to review this product!</p>
+          {% endif %}
+        </div>
+        <div class="card-footer">
+          <form method="post" action="{{ url_for('submit_review', category=category, product_name=product_name) }}">
+            <div class="mb-3">
+              <label for="rating" class="form-label">Rating (1-5):</label>
+              <input type="number" class="form-control" name="rating" id="rating" min="1" max="5" required>
+            </div>
+            <div class="mb-3">
+              <label for="review" class="form-label">Review:</label>
+              <textarea class="form-control" name="review" id="review" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-custom btn-primary">Submit Review</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

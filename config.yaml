@@ -1,0 +1,29 @@
+DEBUG: true
+secret_key: "your_super_secret_key"
+buyer_email: ""
+
+database:
+  users_db: "users"    
+  products_db: "products"  
+  mongo_uri: ""
+
+coinpayments:
+  private_key: ""
+  public_key: ""
+
+coin_mapping:
+  usdt_trc20:
+    currency2: "USDT.TRC20"
+    address: ""
+  bitcoin:
+    currency2: "BTC"
+    address: ""
+  ethereum:
+    currency2: "ETH"
+    address: ""
+  solana:
+    currency2: "SOL"
+    address: ""
+  bnb:
+    currency2: "BNB"
+    address: ""
