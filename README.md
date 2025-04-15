@@ -25,14 +25,14 @@
 
 ```
 LedgerMall/
-├── app.py               # Main Flask application
-├── db/                  # MongoDB database models and connection
-│   ├── products.py      # Product-related database operations
-│   ├── users.py         # User-related database operations
-├── config.py            # Configuration settings 
-├── config.yaml          # API keys
-├── templates/           # HTML templates for the project
-└── requirements.txt     # Python dependencies for the project
+├── app.py            
+├── db/                 
+│   ├── products.py   
+│   ├── users.py         
+├── config.py           
+├── config.yaml        
+├── templates/          
+└── requirements.txt     
 ```
 
 ---
@@ -50,14 +50,40 @@ LedgerMall/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ledgermall.git
+git clone https://github.com/ledgermall/ledgermall.git
 cd ledgermall
 ```
+---
 
-### 2️⃣ Install Dependencies
+### 2️⃣ Configure APIs & MongoDB
+
+Ensure MongoDB is running locally or use a remote cluster. Create a database called `ledgermall` with two collections:
+- `users`
+- `products`
+
+Configure the [config](config.yaml) file and populate with the following:
+
+```python
+SECRET_KEY = "your-secret-key"
+CP_PUBLIC_KEY = "your-coinpayments-public-key" 
+CP_PRIVATE_KEY = "your-coinpayments-private-key"
+BUYER_EMAIL = "buyer@example.com"
+
+COIN_MAPPING = {
+    "btc": {"currency2": "BTC", "address": "your-btc-address"},
+    "ltc": {"currency2": "LTC", "address": "your-ltc-address"},
+    ...
+}
+```
+> ⚠️ Keep this file secure and don’t commit it publicly.
+
+---
+
+### 3️⃣ Install Dependencies & Run WebApp
 
 ```bash
 pip install -r requirements.txt
+python app.py
 ```
 
 <details>
@@ -70,27 +96,11 @@ flask-bcrypt
 pymongo
 pycoinpayments
 ```
-
 </details>
-
-### 3️⃣ Configure MongoDB
-
-Ensure MongoDB is running locally or use a remote cluster. Create a database called `ledgermall` with two collections:
-
-- `users`
-- `products`
-
-**Sample DB connection (`db.py`):**
-
-```python
-import pymongo
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = client["ledgermall"]
-```
 
 ---
 
-## 👑 Admin Setup (Manual via MongoDB)
+## 🔐 Admin Setup (Manual via MongoDB)
 
 Create an admin user directly in the `users` collection. Sample document:
 
@@ -112,27 +122,6 @@ print(bcrypt.generate_password_hash("yourpassword").decode())
 ```
 
 > ⚠️ There’s no web interface to set up admin yet. Use MongoDB Compass or CLI.
-
----
-
-## 🔐 API & App Configuration
-
-Create a `config.py` file and populate with the following:
-
-```python
-SECRET_KEY = "your-secret-key"
-CP_PUBLIC_KEY = "your-coinpayments-public-key"
-CP_PRIVATE_KEY = "your-coinpayments-private-key"
-BUYER_EMAIL = "buyer@example.com"
-
-COIN_MAPPING = {
-    "btc": {"currency2": "BTC", "address": "your-btc-address"},
-    "ltc": {"currency2": "LTC", "address": "your-ltc-address"},
-    ...
-}
-```
-
-> ⚠️ Keep this file secure and don’t commit it publicly.
 
 ---
 
