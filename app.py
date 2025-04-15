@@ -28,29 +28,46 @@
 #
 # For further details on the license, visit: https://www.gnu.org/licenses/agpl-3.0.html
 
-
 import time
 from urllib.parse import urlparse, urljoin
-from flask import Flask, render_template, request, redirect, url_for, session, flash, abort
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash,
+    abort,
+)
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+    UserMixin,
+)
 from flask_bcrypt import Bcrypt
 import pycoinpayments
 
 from config import config
 
-from db import *  
+from db import *
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
 from datetime import datetime
 
-@app.template_filter('datetimeformat')
-def datetimeformat(value, format='%Y-%m-%d %H:%M:%S'):
+
+@app.template_filter("datetimeformat")
+def datetimeformat(value, format="%Y-%m-%d %H:%M:%S"):
     try:
         return datetime.fromtimestamp(float(value)).strftime(format)
     except Exception:
         return value
+
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
@@ -64,6 +81,7 @@ crypto_client = pycoinpayments.CoinPayments(
     public_key=config.CP_PUBLIC_KEY,
 )
 
+
 class User(UserMixin):
     def __init__(self, username, password, balance=0, is_admin=False):
         self.id = username
@@ -76,30 +94,37 @@ class User(UserMixin):
     def get(username):
         data = users_db.get_by_username(username)
         if data:
-            return User(username=data["username"],
-                        password=data["password"],
-                        balance=data.get("balance", 0),
-                        is_admin=data.get("is_admin", False))
+            return User(
+                username=data["username"],
+                password=data["password"],
+                balance=data.get("balance", 0),
+                is_admin=data.get("is_admin", False),
+            )
         return None
 
     @staticmethod
     def get_by_username(username):
         for u in users_db.get_all():
             if u.get("username") == username:
-                return User(username=u["username"],
-                            password=u["password"],
-                            balance=u.get("balance", 0),
-                            is_admin=u.get("is_admin", False))
+                return User(
+                    username=u["username"],
+                    password=u["password"],
+                    balance=u.get("balance", 0),
+                    is_admin=u.get("is_admin", False),
+                )
         return None
+
 
 @login_manager.user_loader
 def load_user(username):
     return User.get(username)
 
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return (test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc)
+    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -114,6 +139,7 @@ def register():
         flash("Registration successful! Please log in.")
         return redirect(url_for("login"))
     return render_template("register.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -137,12 +163,14 @@ def login():
         next_page = ""
     return render_template("login.html", next=next_page)
 
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("Logged out successfully.")
     return redirect(url_for("login"))
+
 
 @app.route("/")
 @login_required
@@ -151,11 +179,13 @@ def index():
     cats = products_db.all_category()
     return render_template("index.html", categories=cats)
 
+
 @app.route("/shop/<category>")
 @login_required
 def shop_category(category):
     prod = products_db.all_product(category)
     return render_template("shop_category.html", category=category, products=prod)
+
 
 @app.route("/product/<category>/<product_name>", methods=["GET", "POST"])
 @login_required
@@ -169,21 +199,33 @@ def product_detail(category, product_name):
             quantity = int(request.form["quantity"])
         except ValueError:
             flash("Invalid quantity")
-            return redirect(url_for("product_detail", category=category, product_name=product_name))
+            return redirect(
+                url_for("product_detail", category=category, product_name=product_name)
+            )
         if quantity < 1 or quantity > prod["quantity"]:
             flash(f"Quantity must be between 1 and {prod['quantity']}")
-            return redirect(url_for("product_detail", category=category, product_name=product_name))
+            return redirect(
+                url_for("product_detail", category=category, product_name=product_name)
+            )
         cart = session.get("cart", [])
-        cart.append({
-            "category": category,
-            "product": product_name,
-            "quantity": quantity,
-            "price": prod["price"]
-        })
+        cart.append(
+            {
+                "category": category,
+                "product": product_name,
+                "quantity": quantity,
+                "price": prod["price"],
+            }
+        )
         session["cart"] = cart
         flash("Product added to cart")
         return redirect(url_for("cart"))
-    return render_template("product_detail.html", product=prod, category=category, product_name=product_name)
+    return render_template(
+        "product_detail.html",
+        product=prod,
+        category=category,
+        product_name=product_name,
+    )
+
 
 @app.route("/cart", methods=["GET", "POST"])
 @login_required
@@ -198,13 +240,14 @@ def cart():
         purchased_accounts = []
         for item in cart:
             prod = products_db.get_product(item["category"], item["product"])
-            accounts = prod["accounts"][:item["quantity"]]
+            accounts = prod["accounts"][: item["quantity"]]
             purchased_accounts.extend(accounts)
             products_db.rm_accounts(item["category"], item["product"], accounts)
         session["cart"] = []
         flash("Purchase successful! Your products will be delivered below.")
         return render_template("purchase_success.html", accounts=purchased_accounts)
     return render_template("cart.html", cart=cart, total=total)
+
 
 @app.route("/cart/remove/<int:index>", methods=["POST"])
 @login_required
@@ -218,10 +261,12 @@ def remove_cart_item(index):
         flash("Invalid item index.")
     return redirect(url_for("cart"))
 
+
 @app.route("/support")
 @login_required
 def support():
     return render_template("support.html")
+
 
 @app.route("/admin/support")
 @login_required
@@ -229,6 +274,7 @@ def admin_support():
     if not current_user.is_admin:
         abort(403)
     return render_template("admin_support.html", support_chats=support_messages)
+
 
 @app.route("/admin/reply/<username>", methods=["POST"])
 @login_required
@@ -239,18 +285,22 @@ def admin_reply(username):
     if reply_text:
         if username not in support_messages:
             support_messages[username] = []
-        support_messages[username].append({
-            "username": current_user.id,
-            "message": reply_text,
-            "timestamp": time.time()
-        })
+        support_messages[username].append(
+            {
+                "username": current_user.id,
+                "message": reply_text,
+                "timestamp": time.time(),
+            }
+        )
         flash(f"Reply sent to {username}!")
     return redirect(url_for("admin_support"))
+
 
 @app.route("/rules")
 @login_required
 def rules():
     return render_template("rules.html")
+
 
 @app.route("/profile")
 @login_required
@@ -259,6 +309,7 @@ def profile():
     history = user.get("history", [])
     return render_template("profile.html", user=user, history=history)
 
+
 @app.route("/product/<category>/<product_name>/review", methods=["POST"])
 @login_required
 def submit_review(category, product_name):
@@ -266,21 +317,28 @@ def submit_review(category, product_name):
     review_text = request.form.get("review")
     if not rating or not review_text:
         flash("Please provide both rating and review text.")
-        return redirect(url_for("product_detail", category=category, product_name=product_name))
+        return redirect(
+            url_for("product_detail", category=category, product_name=product_name)
+        )
     try:
         rating = int(rating)
     except ValueError:
         flash("Invalid rating value.")
-        return redirect(url_for("product_detail", category=category, product_name=product_name))
+        return redirect(
+            url_for("product_detail", category=category, product_name=product_name)
+        )
     review = {
         "username": current_user.id,
         "rating": rating,
         "review": review_text,
-        "timestamp": time.time()
+        "timestamp": time.time(),
     }
     products_db.add_review(category, product_name, review)
     flash("Review submitted successfully!")
-    return redirect(url_for("product_detail", category=category, product_name=product_name))
+    return redirect(
+        url_for("product_detail", category=category, product_name=product_name)
+    )
+
 
 @app.route("/admin/analytics")
 @login_required
@@ -291,14 +349,19 @@ def admin_analytics():
     for user in users_db.get_all():
         orders.extend(user.get("history", []))
     total_orders = len(orders)
-    total_revenue = sum(item["price"] * item["quantity"]
-                        for order in orders
-                        for item in order.get("items", []))
+    total_revenue = sum(
+        item["price"] * item["quantity"]
+        for order in orders
+        for item in order.get("items", [])
+    )
     avg_order = total_revenue / total_orders if total_orders > 0 else 0
-    return render_template("admin_analytics.html",
-                           total_orders=total_orders,
-                           total_revenue=total_revenue,
-                           avg_order=avg_order)
+    return render_template(
+        "admin_analytics.html",
+        total_orders=total_orders,
+        total_revenue=total_revenue,
+        avg_order=avg_order,
+    )
+
 
 @app.route("/search")
 @login_required
@@ -315,16 +378,20 @@ def search():
                     continue
                 if max_price is not None and prod["price"] > max_price:
                     continue
-                results.append({
-                    "category": cat_name,
-                    "product_name": pname,
-                    "price": prod["price"],
-                    "quantity": prod["quantity"],
-                    "image_url": prod.get("image_url", "")
-                })
+                results.append(
+                    {
+                        "category": cat_name,
+                        "product_name": pname,
+                        "price": prod["price"],
+                        "quantity": prod["quantity"],
+                        "image_url": prod.get("image_url", ""),
+                    }
+                )
     return render_template("search.html", results=results, query=query)
 
+
 support_messages = {}
+
 
 @app.route("/chat", methods=["GET", "POST"])
 @login_required
@@ -336,14 +403,17 @@ def chat():
     if request.method == "POST":
         message = request.form.get("message")
         if message:
-            support_messages[user_id].append({
-                "username": current_user.id,
-                "message": message,
-                "timestamp": time.time()
-            })
+            support_messages[user_id].append(
+                {
+                    "username": current_user.id,
+                    "message": message,
+                    "timestamp": time.time(),
+                }
+            )
             flash("Message sent!")
         return redirect(url_for("chat"))
     return render_template("chat.html", messages=support_messages[user_id])
+
 
 @app.route("/addmoney", methods=["GET", "POST"])
 @login_required
@@ -365,13 +435,15 @@ def addmoney():
             flash("Invalid coin selection")
             return redirect(url_for("addmoney"))
         try:
-            txn = crypto_client.create_transaction({
-                'amount': amt,
-                'currency1': 'USD',
-                'currency2': selected_coin["currency2"],
-                'buyer_email': config.BUYER_EMAIL,
-                'address': selected_coin["address"],
-            })
+            txn = crypto_client.create_transaction(
+                {
+                    "amount": amt,
+                    "currency1": "USD",
+                    "currency2": selected_coin["currency2"],
+                    "buyer_email": config.BUYER_EMAIL,
+                    "address": selected_coin["address"],
+                }
+            )
         except Exception as e:
             print("Crypto API error:", e)
             flash("Payment API connection failed, try again later.")
@@ -383,8 +455,16 @@ def addmoney():
         session["deposit_amount"] = amt
         session["coin"] = coin
         session["qr_url"] = txn.get("qrcode_url", "")
-        return render_template("payment.html", txn=txn, tx_id=txn["txn_id"], amt=amt, coin=coin, qr_url=txn.get("qrcode_url", ""))
+        return render_template(
+            "payment.html",
+            txn=txn,
+            tx_id=txn["txn_id"],
+            amt=amt,
+            coin=coin,
+            qr_url=txn.get("qrcode_url", ""),
+        )
     return render_template("addmoney.html")
+
 
 @app.route("/payment/refresh")
 @login_required
@@ -397,9 +477,9 @@ def payment_refresh():
         return redirect(url_for("wallet"))
     txid = txn["txn_id"]
     amt = session.get("deposit_amount", 0)
-    txn_info = crypto_client.get_tx_info({'txid': txid})
+    txn_info = crypto_client.get_tx_info({"txid": txid})
     status_text = txn_info.get("status_text", "Unknown")
-    if txn_info.get('status', 0) >= 1 or current_user.is_admin:
+    if txn_info.get("status", 0) >= 1 or current_user.is_admin:
         users_db.update_balance(current_user.id, int(amt))
         flash("Your top-up is successful!")
         session.pop("current_txn", None)
@@ -417,7 +497,17 @@ def payment_refresh():
             hrs = int(remaining // 3600)
             mins = int((remaining % 3600) // 60)
             time_msg = f"{hrs} hours {mins} mins remaining"
-        return render_template("payment.html", txn=txn_info, tx_id=txid, amt=amt, status_text=status_text, time_msg=time_msg, coin=coin, qr_url=qr_url)
+        return render_template(
+            "payment.html",
+            txn=txn_info,
+            tx_id=txid,
+            amt=amt,
+            status_text=status_text,
+            time_msg=time_msg,
+            coin=coin,
+            qr_url=qr_url,
+        )
+
 
 @app.route("/wallet")
 @login_required
@@ -425,11 +515,13 @@ def wallet():
     user = users_db.get_by_username(current_user.id)
     return render_template("wallet.html", user=user)
 
+
 @app.route("/wallet")
 @login_required
 def wallet_view():
     user = users_db.get_by_username(current_user.id)
     return render_template("wallet.html", user=user)
+
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
@@ -437,13 +529,18 @@ def admin_login():
         username = request.form["username"]
         password = request.form["password"]
         user = User.get_by_username(username)
-        if user and user.is_admin and bcrypt.check_password_hash(user.password, password):
+        if (
+            user
+            and user.is_admin
+            and bcrypt.check_password_hash(user.password, password)
+        ):
             login_user(user)
             flash("Welcome, admin!")
             return redirect(url_for("admin_dashboard"))
         flash("Invalid admin credentials.")
         return redirect(url_for("admin_login"))
     return render_template("admin_login.html")
+
 
 @app.route("/admin/logout")
 @login_required
@@ -454,12 +551,14 @@ def admin_logout():
     flash("Admin logged out")
     return redirect(url_for("login"))
 
+
 @app.route("/admin")
 @login_required
 def admin_dashboard():
     if not current_user.is_admin:
         abort(403)
     return render_template("admin_dashboard.html")
+
 
 @app.route("/admin/categories")
 @login_required
@@ -468,6 +567,7 @@ def admin_categories():
         abort(403)
     cats = products_db.all_category()
     return render_template("admin_categories.html", categories=cats)
+
 
 @app.route("/admin/addcategory", methods=["GET", "POST"])
 @login_required
@@ -482,6 +582,7 @@ def admin_addcategory():
         return redirect(url_for("admin_categories"))
     return render_template("admin_addcategory.html")
 
+
 @app.route("/admin/rmcategory", methods=["GET", "POST"])
 @login_required
 def admin_rmcategory():
@@ -494,6 +595,7 @@ def admin_rmcategory():
         return redirect(url_for("admin_categories"))
     cats = products_db.all_category()
     return render_template("admin_rmcategory.html", categories=cats)
+
 
 @app.route("/admin/addproduct", methods=["GET", "POST"])
 @login_required
@@ -515,6 +617,7 @@ def admin_addproduct():
     cats = list(products_db.all_category())
     return render_template("admin_addproduct.html", categories=cats)
 
+
 @app.route("/admin/rmproduct", methods=["GET", "POST"])
 @login_required
 def admin_rmproduct():
@@ -528,6 +631,7 @@ def admin_rmproduct():
         return redirect(url_for("admin_dashboard"))
     cats = products_db.all_category()
     return render_template("admin_rmproduct.html", categories=cats)
+
 
 @app.route("/admin/addaccounts", methods=["GET", "POST"])
 @login_required
@@ -545,6 +649,7 @@ def admin_addaccounts():
     cats = products_db.all_category()
     return render_template("admin_addaccounts.html", categories=cats)
 
+
 @app.route("/admin/stats")
 @login_required
 def admin_stats():
@@ -552,7 +657,10 @@ def admin_stats():
         abort(403)
     total_users = len(list(users_db.get_all()))
     funds_added = 0
-    return render_template("admin_stats.html", total_users=total_users, funds_added=funds_added)
+    return render_template(
+        "admin_stats.html", total_users=total_users, funds_added=funds_added
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=config.DEBUG)
