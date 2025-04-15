@@ -1,16 +1,17 @@
-Copyright (C) 2025 Samrat Talukdar (https://github.com/ogsamrat)
+Copyright (C) 2025 LedgerMall
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version, **with the following additional conditions**:
+(at your option) any later version, with the following additional conditions:
 
 1. Commercial use of this software is strictly prohibited without explicit, written permission from the author (Samrat Talukdar).
-2. You **must credit the original author**, Samrat Talukdar, by name and GitHub handle (https://github.com/ogsamrat), in any derivative or modified work.
+2. You must credit the original author, Samrat Talukdar, by name and GitHub handle (https://github.com/ogsamrat), in any derivative or modified work.
 3. A copy of this license must be included with any redistributions of the code.
+4. In compliance with the AGPL, if you use this software in a network-accessible application (such as a web service), you are required to make the full source code of your modified version available to all users who interact with it over the network.
 
 This program is distributed in the hope that it will be useful,
-but **WITHOUT ANY WARRANTY**; without even the implied warranty of
+but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
 
