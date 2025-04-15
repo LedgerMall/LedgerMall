@@ -1,3 +1,6 @@
+[![License: AGPL v3 + Custom Terms](https://img.shields.io/badge/License-AGPL%20v3%20+%20Attribution%20%2F%20NonCommercial-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+
 # 🧾 LedgerMall – Decentralized Digital Commerce
 
 **LedgerMall** is a secure, crypto-powered e-commerce platform built with **Python**, **Flask**, and **MongoDB**. It supports multiple cryptocurrencies for product purchases, real-time admin analytics, built-in support chat, and wallet integration—making it a future-forward digital shopping experience.
